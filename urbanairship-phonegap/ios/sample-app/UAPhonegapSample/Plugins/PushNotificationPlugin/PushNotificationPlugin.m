@@ -28,9 +28,6 @@ typedef void (^UACordovaVoidCallbackBlock)(NSArray *args);
     //Init Airship launch options
     NSMutableDictionary *takeOffOptions = [[[NSMutableDictionary alloc] init] autorelease];
 
-    // Analytics immplementation
-    [takeOffOptions setValue:[NSNumber numberWithBool:YES] forKey:UAAnalyticsOptionsLoggingKey];
-
     [takeOffOptions setValue:[UAAppDelegateSurrogate shared].launchOptions forKey:UAirshipTakeOffOptionsLaunchOptionsKey];
 
     // Create Airship singleton that's used to talk to Urban Airship servers.
@@ -365,6 +362,9 @@ typedef void (^UACordovaVoidCallbackBlock)(NSArray *args);
 
         [returnDictionary setObject:incomingAlert forKey:@"message"];
         [returnDictionary setObject:incomingExtras forKey:@"extras"];
+        
+        //reset incoming push data until the next background push comes in
+        [[UAAppDelegateSurrogate shared] clearLaunchOptions];
 
         return returnDictionary;
     }];

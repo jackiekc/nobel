@@ -1,3 +1,23 @@
+=============================
+Version 1.0.5 - March 8, 2013
+=============================
+- Moved the plugin intent receiver into the plugin package (Android)
+- Properly handle the Cordova 2.3 changes to the iOS platform value
+
+=================================
+Version 1.0.4 - February 19, 2013
+=================================
+- Updated plugin to be compatible with version 2.0.4 of
+the Urban Airship Android library
+
+Version 1.0.3 - December 7, 2012
+=================================
+- FIXED: getIncoming now only returns incoming push data once
+- Improved Intent flags in Android sample application when launching
+  from a notification
+- Sample applciations now log push data to the console instead of
+  displaying alert dialogs
+
 =================================
 Version 1.0.2 - November 16, 2012
 =================================

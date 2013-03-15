@@ -1,4 +1,16 @@
-package com.urbanairship.phonegap.sample;
+package com.urbanairship.phonegap.plugins;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.os.RemoteException;
+
+import com.urbanairship.Logger;
+import com.urbanairship.UAirship;
+import com.urbanairship.location.UALocationManager;
+import com.urbanairship.phonegap.sample.UAPhonegapSample;
+import com.urbanairship.push.PushManager;
+import com.urbanairship.util.ServiceNotBoundException;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -6,21 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.os.RemoteException;
-
-import com.urbanairship.UAirship;
-import com.urbanairship.location.UALocationManager;
-import com.urbanairship.Logger;
-import com.urbanairship.phonegap.plugins.PushNotificationPlugin;
-import com.urbanairship.push.PushManager;
-import com.urbanairship.util.ServiceNotBoundException;
-
-public class IntentReceiver extends BroadcastReceiver {
-
-    private static final String TAG = IntentReceiver.class.getSimpleName();
+public class PushNotificationPluginIntentReceiver extends BroadcastReceiver {
 
     private Map<String, String> getNotificationExtras(Intent intent) {
         Map<String, String> extrasMap = new HashMap<String, String>();
@@ -33,11 +31,11 @@ public class IntentReceiver extends BroadcastReceiver {
                     "collapse_key",// c2dm collapse key
                     "from",// c2dm sender
                     PushManager.EXTRA_NOTIFICATION_ID,// int id of generated
-                                                      // notification
-                                                      // (ACTION_PUSH_RECEIVED
-                                                      // only)
+                    // notification
+                    // (ACTION_PUSH_RECEIVED
+                    // only)
                     PushManager.EXTRA_PUSH_ID,// internal UA push id
-                    PushManager.EXTRA_ALERT);// ignore aler
+                    PushManager.EXTRA_ALERT);// ignore alert
             if (ignoredKeys.contains(key)) {
                 continue;
             }
@@ -81,7 +79,7 @@ public class IntentReceiver extends BroadcastReceiver {
             Intent launch = new Intent(Intent.ACTION_MAIN);
             launch.setClass(UAirship.shared().getApplicationContext(),
                     UAPhonegapSample.class);
-            launch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            launch.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 
             PushNotificationPlugin.incomingAlert = alert;
             PushNotificationPlugin.incomingExtras = extras;
@@ -97,14 +95,14 @@ public class IntentReceiver extends BroadcastReceiver {
             Boolean valid = intent.getBooleanExtra(
                     PushManager.EXTRA_REGISTRATION_VALID, false);
             Logger.info("Registration complete. APID:"
-                            + intent.getStringExtra(PushManager.EXTRA_APID)
-                            + ". Valid: "
-                            + intent.getBooleanExtra(
-                                    PushManager.EXTRA_REGISTRATION_VALID, false));
+                    + intent.getStringExtra(PushManager.EXTRA_APID)
+                    + ". Valid: "
+                    + intent.getBooleanExtra(
+                            PushManager.EXTRA_REGISTRATION_VALID, false));
             plugin.raiseRegistration(valid, apid);
 
         } else if (action
-                .equals(UALocationManager.ACTION_LOCATION_SERVICE_BOUND)) {
+                .equals(UALocationManager.getLocationIntentAction(UALocationManager.ACTION_SUFFIX_LOCATION_SERVICE_BOUND))) {
             try {
                 UALocationManager.shared().recordCurrentLocation();
                 Logger.info("Location successfully recorded on Intent");
